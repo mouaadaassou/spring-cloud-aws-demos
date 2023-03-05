@@ -1,0 +1,12 @@
+sqs:
+  fake-queue-url: ${QUEUE_URL}
+  fake-queue-name: fake-sqs.fifo
+spring:
+  cloud:
+    aws:
+      region:
+        static: eu-central-1
+      credentials:
+        profile:
+          name: linux-cert-dev
+          path: ${HOME}/.aws/credentials
