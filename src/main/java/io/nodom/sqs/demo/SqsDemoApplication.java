@@ -3,11 +3,14 @@ package io.nodom.sqs.demo;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+import io.awspring.cloud.dynamodb.DynamoDbTableNameResolver;
 import io.awspring.cloud.sqs.operations.SqsTemplate;
 import io.awspring.cloud.sqs.operations.TemplateAcknowledgementMode;
 import io.awspring.cloud.sqs.support.converter.SqsMessagingMessageConverter;
 import io.nodom.sqs.demo.domain.UserWithMetaData;
+import io.nodom.sqs.demo.service.CustomDynamoDbTableNameResolver;
 import io.nodom.sqs.demo.service.FakeSqsClient;
+import io.nodom.sqs.demo.service.ReplyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -32,12 +35,18 @@ public class SqsDemoApplication {
     }
 
     @Bean
-    public CommandLineRunner commandLineRunner(FakeSqsClient fakeSqsClient) {
+    public CommandLineRunner commandLineRunner(FakeSqsClient fakeSqsClient, ReplyService replyService) {
         return commandLineRunner -> {
             log.info("Running CommandLineRunner Bean...");
+            replyService.queryReplyWithKey("Amazon DynamoDB#DynamoDB Thread 2");
             fakeSqsClient.receiveMessage(180);
             log.info("Done Running CommandLineRunner Bean!");
         };
+    }
+
+    @Bean
+    DynamoDbTableNameResolver dynamoDbTableNameResolver() {
+        return new CustomDynamoDbTableNameResolver();
     }
 
     @Bean(name = "sqsAsyncClient")

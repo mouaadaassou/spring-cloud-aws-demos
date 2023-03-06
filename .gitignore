@@ -20,6 +20,7 @@ target/
 *.ipr
 
 ### Terraform
+terraform/.terraform/
 ./terraform/.terraform
 ./terraform/.terraform.lock.hcl
 

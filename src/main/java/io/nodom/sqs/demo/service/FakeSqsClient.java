@@ -50,9 +50,10 @@ public class FakeSqsClient {
 
         log.info("received {} elements", collect.size());
 
-        List<CompletableFuture<Void>> completableFutures = Lists.partition(getOriginalMessageList(collect), 10).stream()
-                .map(Acknowledgement::acknowledgeAsync)
-                .toList();
+        List<CompletableFuture<Void>> completableFutures =
+                Lists.partition(getOriginalMessageList(collect), 10).stream()
+                        .map(Acknowledgement::acknowledgeAsync)
+                        .toList();
 
         CompletableFuture.allOf(completableFutures.toArray(item -> new CompletableFuture[0])).join();
         collect.forEach(item -> {
